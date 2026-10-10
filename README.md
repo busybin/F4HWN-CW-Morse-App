@@ -23,7 +23,14 @@ message history, prosigns, WPM/squelch control.
   transient trimming, and pruning of isolated all-T/E noise bursts.
 - **Message box** — 4 visible rows, sent messages prefixed `TX ` (normal weight), received bold,
   automatic wrapping, **131 messages of history** (fits only in the 8 KiB window).
-- **Prosigns** — `F` latch + digit: `F+1 CQ`, `F+2 COPY`, `F+3 73`, `F+5 TEST`, `F+9 SOS`.
+- **Prosigns** — `F` latch + digit inserts a prosign. Defaults:
+
+  | `F+1` | `F+2` | `F+3` | `F+4` | `F+5` | `F+6` | `F+7` | `F+8` | `F+9` |
+  | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+  | CQ | DE | UR | RST | R | TU | 73 | AR | SK |
+
+  Each slot holds up to 5 characters. Edit them **per radio** from the flasher page's
+  **Prosigns** tab — it rewrites the table in the installed App in place, no reinstall.
 - **Config** — WPM, squelch level and CARR/TONE mode persist in the slot header sector; survive
   App re-install on the 8K firmware.
 - **Layout** — all 7 screen rows used: status bar → live preview → 4-row message box → compose
