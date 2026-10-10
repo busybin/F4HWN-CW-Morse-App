@@ -9,7 +9,7 @@ set -euo pipefail
 
 APP="cw_v16"
 SRC="cw_v16.c"
-APP_NAME="CW V17"
+APP_NAME="CW"
 APP_VER="17"
 APP_API_MIN=1
 APP_MAX=8192                              # 8 KiB overlay window (code+bss)
