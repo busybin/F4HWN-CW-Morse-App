@@ -87,8 +87,3 @@ Beacon overlay App, Apache-2.0); the upstream repository declares no license, so
 grants none for its copyrighted parts — only the modifications contributed here are Apache-2.0.
 Details in [NOTICE.md](NOTICE.md).
 
-## Version
-
-Release **V16** — one version number, always an integer after the `V` (this is also what the
-radio's App menu shows: `CW V16`). Current build: 131-message history (needs the 8 KiB
-window), double-`F` clear fix, isolated T/E burst pruning at burst end, `EXIT?` two-step exit.
