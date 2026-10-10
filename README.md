@@ -89,5 +89,6 @@ Details in [NOTICE.md](NOTICE.md).
 
 ## Version
 
-Release **v1.7** — 131-message history (needs the 8 KiB window), double-`F` clear fix, isolated
-T/E burst pruning at burst end, `EXIT?` two-step exit.
+Release **V16** — one version number, always an integer after the `V` (this is also what the
+radio's App menu shows: `CW V16`). Current build: 131-message history (needs the 8 KiB
+window), double-`F` clear fix, isolated T/E burst pruning at burst end, `EXIT?` two-step exit.

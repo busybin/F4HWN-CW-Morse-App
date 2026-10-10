@@ -10,7 +10,7 @@ set -euo pipefail
 APP="cw_v16"
 SRC="cw_v16.c"
 APP_NAME="CW V16"
-APP_VER="1.7"
+APP_VER="16"
 APP_API_MIN=1
 APP_MAX=8192                              # 8 KiB overlay window (code+bss)
 APP_VMA="${APP_VMA:-0x20000280}"          # firmware __mb_workspace_start
