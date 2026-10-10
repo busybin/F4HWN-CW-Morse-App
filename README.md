@@ -4,6 +4,8 @@ A single-file overlay App for the **Quansheng UV-K1 / UV-K5 V3 (PY32F071)** runn
 F4HWN firmware **with the 8 KiB overlay window** — CW (Morse) transmit + live receive decode,
 message history, prosigns, WPM/squelch control.
 
+![CW App running on the radio](screenshots/cw.png)
+
 > **⚠️ This App requires the 8K overlay firmware.**
 > It is linked for the 8 KiB overlay workspace (`code+bss ≤ 8192 B`) and will **not run on the
 > stock 4 KiB F4HWN firmware** — its `.bss` overruns the stock workspace and it crashes on start.
