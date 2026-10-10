@@ -78,6 +78,16 @@ only while idle → squelch opens at `floor+6+2·level` dB, closes −4 dB → d
    of it, needed if you also flash the 8K firmware image) into any App slot — e.g. slot 1.
 4. Radio → Apps menu → **CW**.
 
+## How to use
+
+1. **Open** the App: Radio → Apps menu → **CW**.
+2. **Compose**: `0`–`9` multitap (e.g. tap `2` repeatedly for `A`/`B`/`C`/`2`); `*` = space,
+   `0` = backspace.
+3. **Insert a prosign**: press `F`, then a digit — `F+1` = CQ … `F+9` = SK (see the table above).
+4. **Send**: `PTT` or `MENU` (empty or busy → `BUSY`).
+5. **Receive**: incoming Morse decodes live from the RSSI envelope (CARR keying only — see
+   _Receiving_). Received text is bold, sent text is prefixed `TX `.
+
 ## Building
 
 ```bash
