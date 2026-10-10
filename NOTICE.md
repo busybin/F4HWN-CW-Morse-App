@@ -1,4 +1,4 @@
-# NOTICE — CW V16
+# NOTICE — CW
 
 This product includes work derived from the projects below.
 

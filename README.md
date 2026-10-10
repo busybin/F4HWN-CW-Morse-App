@@ -1,4 +1,4 @@
-# CW V16 — CW (Morse) transceiver overlay App for F4HWN 8K firmware
+# CW — Morse transceiver overlay App for the F4HWN 8K firmware
 
 A single-file overlay App (`cw_v16.c`) for the **Quansheng UV-K1 / UV-K5 V3 (PY32F071)** running
 F4HWN firmware **with the 8 KiB overlay window** — CW (Morse) transmit + live receive decode,
@@ -62,11 +62,12 @@ only while idle → squelch opens at `floor+6+2·level` dB, closes −4 dB → d
 
 1. Flash the **8K firmware** (link above) — this also invalidates all existing App slots, so
    re-install every App afterwards.
-2. Build `CW V16.app` (see below) or take the prebuilt one from the
+2. Nothing to download if you use the flasher page below; otherwise run `./build.sh`
+   (see _Building_) or take the prebuilt package from the
    [latest release](https://github.com/busybin/F4HWN-CW-Morse-App/releases/latest).
 3. Install with the [UVStudio](https://armel.github.io/uvstudio/) web flasher (or a local mirror
    of it, needed if you also flash the 8K firmware image) into any App slot — e.g. slot 1.
-4. Radio → Apps menu → **CW V16**.
+4. Radio → Apps menu → **CW**.
 
 ## Building
 
@@ -74,7 +75,7 @@ only while idle → squelch opens at `floor+6+2·level` dB, closes −4 dB → d
 ./build.sh            # needs arm-none-eabi-gcc 13.x on PATH (or TC=/path/to/bin)
 ```
 
-Produces `CW V16.app` (FAP1 image). Link script `app.ld` targets the 8 KiB overlay at VMA
+Produces the packaged `.app` image (FAP1). Link script `app.ld` targets the 8 KiB overlay at VMA
 `0x20000280`; `app_api.h` is the firmware's overlay ABI header (API level 1 is enough for this
 App; `api_min = 1`). Budget: **code 5356 B + bss 2828 B = 8184 / 8192 B** — there are only 8
 bytes left, so check the linker report before adding features.
