@@ -1,6 +1,6 @@
 # CW — Morse transceiver overlay App for the F4HWN 8K firmware
 
-A single-file overlay App (`cw_v16.c`) for the **Quansheng UV-K1 / UV-K5 V3 (PY32F071)** running
+A single-file overlay App for the **Quansheng UV-K1 / UV-K5 V3 (PY32F071)** running
 F4HWN firmware **with the 8 KiB overlay window** — CW (Morse) transmit + live receive decode,
 message history, prosigns, WPM/squelch control.
 

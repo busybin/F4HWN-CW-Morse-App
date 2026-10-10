@@ -49,7 +49,7 @@ static const uint8_t M_DIG[10]={0x3F,0x2F,0x27,0x23,0x21,0x20,0x30,0x38,0x3C,0x3
  * needs explicit separators (like POP_FLAT has). A pointer table is clearer. */
 static const char *const KEYMAP[10] = {"", "1.0/", "ABC2", "DEF3", "GHI4",
     "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9"};
-static const char PROSIGN_T[10][6]={"","CQ","COPY","73","","TEST","","","","SOS"};
+static const char PROSIGN_T[10][6]={"","CQ","DE","UR","RST","R","TU","73","AR","SK"};
 static const char POP_FLAT[]="BUSY\0""FULL\0""TONE\0""CARR\0""EXIT?";
 static const app_api_t *A;
 
