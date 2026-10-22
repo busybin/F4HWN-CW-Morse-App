@@ -15,7 +15,7 @@ message history, prosigns, WPM/squelch control.
 > stock 4 KiB F4HWN firmware** — its `.bss` overruns the stock workspace and it crashes on start.
 > Get the firmware here:
 > **[busybin/uv-k1-k5v3-firmware-f4hwn-8k](https://github.com/busybin/uv-k1-k5v3-firmware-f4hwn-8k)**
-> (fork of `armel/uv-k1-k5v3-firmware-custom` v6.1.0, on-screen version `F4HWN v6.1.0+8K`).
+> (fork of `armel/uv-k1-k5v3-firmware-custom` v6.3.0, on-screen version `F4HWN v6.3.0+8K`).
 > The regular upstream firmware + the stock UVStudio page work fine for everything else.
 
 ## Features
@@ -99,9 +99,16 @@ only while idle → squelch opens at `floor+6+2·level` dB, closes −4 dB → d
 ```
 
 Produces the packaged `.app` image (FAP1). Link script `app.ld` targets the 8 KiB overlay at VMA
-`0x20000280`; `app_api.h` is the firmware's overlay ABI header (API level 1 is enough for this
-App; `api_min = 1`). Budget: **code 5356 B + bss 2828 B = 8184 / 8192 B** — there are only 8
-bytes left, so check the linker report before adding features.
+`0x20000280`; `app_api.h` is the firmware's overlay ABI header. The App declares
+**`api_min = 4`** (the 8K fork's API level: upstream level 3 plus `uid_get` at offset 396).
+Budget: **code 5324 B + bss 2828 B = 8152 / 8192 B** — 40 bytes left, so check the linker report
+before adding features.
+
+Version 18 uses the level 3 services: `blit_page(8)` for the screen (a whole-screen blit without
+the blocking K5Viewer frame that `blit_full` sends — that frame overran the 8K stack and crashed
+the radio when a viewer was connected; the viewer is fed from the idle loop instead),
+`tx_prepare()` for keying (no 10 ms unshaped carrier burst before the first mark), the resident
+`append_u32` formatter and the resident divider `uidivmod`.
 
 ## Licence & attribution
 

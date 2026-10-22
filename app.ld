@@ -46,7 +46,7 @@ SECTIONS {
     __app_end = .;
     __app_image_end = LOADADDR(.app) + SIZEOF(.app);
     ASSERT(__app_end <= APP_VMA + APP_LENGTH,
-           "SECMSG overlay app overflows the 8 KiB overlay")
+           "CW overlay exceeds the 8 KiB overlay")
     ASSERT(__app_image_end <= APP_VMA + APP_CODE_MAX,
            "SECMSG app image exceeds the 8 KiB code budget")
 

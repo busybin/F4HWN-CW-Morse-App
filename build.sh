@@ -10,8 +10,8 @@ set -euo pipefail
 APP="cw_v16"
 SRC="cw_v16.c"
 APP_NAME="CW"
-APP_VER="17"
-APP_API_MIN=1
+APP_VER="18"
+APP_API_MIN=4                            # API level 4: our 8K firmware (uid_get at 396)
 APP_MAX=8192                              # 8 KiB overlay window (code+bss)
 APP_VMA="${APP_VMA:-0x20000280}"          # firmware __mb_workspace_start
 
@@ -27,7 +27,7 @@ CC="$TC/arm-none-eabi-gcc"
 OBJCOPY="$TC/arm-none-eabi-objcopy"
 [ -x "$CC" ] || { printf 'ARM GCC not found: %s (set TC=...)\n' "$CC" >&2; exit 1; }
 
-CFLAGS="-mcpu=cortex-m0plus -mthumb -Os -std=gnu11 -ffreestanding -fno-builtin \
+CFLAGS="-mcpu=cortex-m0plus -mthumb -Oz -fno-jump-tables -std=gnu11 -ffreestanding -fno-builtin \
   -fno-common -fomit-frame-pointer -ffunction-sections -fdata-sections -Wall -Wextra"
 LDFLAGS="-nostdlib -nostartfiles -T app.ld -Wl,--defsym,APP_VMA=${APP_VMA} \
   -Wl,--gc-sections -Wl,--build-id=none -Wl,--no-warn-rwx-segments"

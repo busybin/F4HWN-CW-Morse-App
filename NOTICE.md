@@ -13,9 +13,9 @@ This product includes work derived from the projects below.
 - https://github.com/DualTachyon/uv-k5-firmware
 
 The App targets the **8 KiB overlay window** fork published at
-https://github.com/busybin/uv-k1-k5v3-firmware-f4hwn-8k (Apache-2.0), which adds `uid_get()`
-to `app_api.h` ahead of the Labs-only block; this App does not call it, only API-level-1
-services are used.
+https://github.com/busybin/uv-k1-k5v3-firmware-f4hwn-8k (Apache-2.0), which appends `uid_get()`
+after the upstream level 3 services (offset 396, `APP_API_LEVEL` 4); this App declares
+`api_min = 4` and uses the level 3 display, keying and formatting services.
 
 ## 2. CW-F4HWN-App by lu-meiagui (no license declared)
 

@@ -66,14 +66,12 @@ static struct {
     uint8_t  hrx[HIST_N], hlen[HIST_N];
 } G;
 
+/* API level 2 resident division: quotient in the low word, remainder in the
+ * high word, so the 32-step shift/subtract loop stays out of the image. */
 static uint32_t udiv(uint32_t n, uint32_t d, uint32_t *rem){
-    uint32_t q = 0, r = 0;
-    for(int8_t i = 31; i >= 0; i--){
-        r = (r << 1) | ((n >> i) & 1u);
-        if(r >= d){ r -= d; q |= (1u << i); }
-    }
-    if(rem) *rem = r;
-    return q;
+    const uint64_t qr = A->uidivmod(n, d);
+    if(rem) *rem = (uint32_t)(qr >> 32);
+    return (uint32_t)qr;
 }
 
 static uint8_t slen(const char *s){ uint8_t n = 0; while(s[n]) n++; return n; }
@@ -88,11 +86,14 @@ static char *pstr(char *d, const char *s){
     return d;
 }
 
-static char *pnum(char *d, uint32_t v, uint8_t pad){
-    char t[10]; int n = 0;
-    do { uint32_t r; v = udiv(v, 10, &r); t[n++] = (char)('0' + r); } while(v);
-    while(n < pad) t[n++] = '0';
-    while(n--) *d++ = t[n];
+/* Unsigned decimal, no padding: the resident formatter, NUL-terminated. */
+static char *pz(char *d, uint32_t v){ d = A->append_u32(d, v); *d = 0; return d; }
+
+/* Exactly five zero-padded digits: the frequency fraction (0..99999). */
+static char *pfrac5(char *d, uint32_t v){
+    char t[5];
+    for(uint8_t i = 5; i--; ){ uint32_t r; v = udiv(v, 10u, &r); t[i] = (char)('0' + r); }
+    for(uint8_t i = 0; i < 5; i++) *d++ = t[i];
     *d = 0;
     return d;
 }
@@ -137,7 +138,10 @@ static void alert(uint8_t idx){
     if(!(G.flags & F_SQL)){ if(idx <= 1) beepDeny(); else beep(); }
 }
 
-static void blitAll(void){ A->blit_status(); A->blit_full(); }
+/* API level 3: blit_page(8) is the whole screen without the blocking K5Viewer
+ * frame that blit_full sends, which overran the 8K fork's stack with a viewer
+ * attached. The viewer is fed separately, from the idle main loop. */
+static void blitAll(void){ A->blit_status(); A->blit_page(8); }
 
 static void chrome(void){
     A->display_clear(); A->status_clear();
@@ -211,11 +215,11 @@ static void drawBox(void){
 static void drawStatus(void){
     char b[19], *p;
     uint32_t rem;
-    b[0] = 'W'; p = b + 1; p = pnum(p, udiv(1200u, G.unitMs, NULL), 1);
-    *p++ = ' '; *p++ = 'S'; p = pnum(p, G.sqlLevel, 1);
+    b[0] = 'W'; p = b + 1; p = pz(p, udiv(1200u, G.unitMs, NULL));
+    *p++ = ' '; *p++ = 'S'; p = pz(p, G.sqlLevel);
     A->print_normal(b, 2, 0, 6);
-    p = pnum(b, udiv(A->rx_freq(), 100000u, &rem), 1);
-    *p++ = '.'; p = pnum(p, rem, 5);
+    p = pz(b, udiv(A->rx_freq(), 100000u, &rem));
+    *p++ = '.'; p = pfrac5(p, rem);
     A->print_normal(b, (uint8_t)(126 - (p - b) * 7), 0, 6);
 }
 
@@ -229,13 +233,13 @@ static void drawPreview(void){
         p = b; p = pstr(p, "SEND ");
         for(uint8_t i = 0; G.txPat[i]; i++) *p++ = G.txPat[i];
         *p = 0;
-        q = t; q = pnum(q, G.txPos, 1); *q++ = '/'; q = pnum(q, G.msgLen, 1);
+        q = t; q = pz(q, G.txPos); *q++ = '/'; q = pz(q, G.msgLen);
     } else {
         p = b; p = pstr(p, ((G.flags & F_SQL) && G.blink) ? "     " : "RECV ");
         uint8_t bit = 0x80; while(bit > 1 && !(G.rxCode & bit)) bit >>= 1;
         for(bit >>= 1; bit; bit >>= 1) *p++ = (G.rxCode & bit) ? '-' : '.';
         *p = 0;
-        q = t; q = pnum(q, G.rxCount, 1);
+        q = t; q = pz(q, G.rxCount);
     }
     A->print_normal(b, 0, 0, 0);
     A->print_normal(t, (uint8_t)(126 - (q - t) * 7), 0, 0);
@@ -251,7 +255,7 @@ static void drawMenu(void){
         p = b; *p++ = (G.menu == row) ? '>' : ' ';
         p = pstr(p, row == 1 ? "WPM " : "SQL ");
         if(ed) *p++ = '[';
-        p = pnum(p, row == 1 ? udiv(1200u, G.unitMs, NULL) : G.sqlLevel, 1);
+        p = pz(p, row == 1 ? udiv(1200u, G.unitMs, NULL) : G.sqlLevel);
         if(ed) *p++ = ']';
         *p = 0;
         A->print_normal(b, 2, 0, row);
@@ -265,7 +269,7 @@ static void draw(void){
     if(G.menu){ drawMenu(); drawStatus(); return; }
     drawBox();
     uint8_t hint = G.msgLen < MSG_MAX ? (uint8_t)(MSG_MAX - G.msgLen) : 0;
-    q = r; *q++ = '('; q = pnum(q, hint, 1); *q++ = ')'; *q = 0;
+    q = r; *q++ = '('; q = pz(q, hint); *q++ = ')'; *q = 0;
     uint8_t hw = (uint8_t)((q - r) + 1);
     uint8_t maxc = (uint8_t)(18 - hw);
     uint8_t st = (G.msgLen > (uint8_t)(maxc - 1)) ? (uint8_t)(G.msgLen - (maxc - 1)) : 0;
@@ -340,7 +344,10 @@ static void rxSample(void);
 static void rxTune(bool full);
 
 static bool sendOnce(void){
-    A->tx_set_params();
+    /* tx_prepare (API level 3) applies the calibrated frequency and skips the
+     * 10 ms unshaped carrier burst tx_set_params leaves behind: every mark here
+     * keys the PA itself through tx_carrier(), so the first one starts clean. */
+    A->tx_prepare();
     A->tx_tone(TONE_HZ); A->set_af(AF_BEEP); A->audio_path(true); A->tx_mute(true);
     if(G.flags & F_TONE) A->tx_carrier(true);
     histNew(false);
@@ -602,7 +609,10 @@ void app_main(const app_api_t *api){
         if(G.popT && --G.popT == 0){ G.pop = 0; drawAndBlit(); }
         if(++rxAcc >= 8){ rxAcc = 0; G.blink ^= 1; drawAndBlit(); }
 
-        if(!(G.flags & F_MARK) && ++G.batTimer >= 40){ G.batTimer = 0; A->battery_sample(); }
+        if(!(G.flags & F_MARK) && ++G.batTimer >= 40){
+            G.batTimer = 0; A->battery_sample();
+            if(!G.txPos) A->viewer_update();   /* mirror, ~2 s cadence */
+        }
         A->backlight_update();
     }
 
