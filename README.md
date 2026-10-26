@@ -8,6 +8,9 @@ CW (Morse) transmit and live decode for the **Quansheng UV-K1 / UV-K5 V3 (PY32F0
 F4HWN firmware **with the 8 KiB overlay window**: multitap composer, 4–50 WPM keying,
 RSSI-based receive decoder, 131-message history, prosigns.
 
+Unofficial third-party App: not affiliated with, endorsed by, or supported by the F4HWN
+firmware project (Armel Fauveau), Quansheng, or the upstream firmware authors.
+
 ![CW App running on the radio](screenshots/cw.png)
 
 ## Install — two steps, one page
