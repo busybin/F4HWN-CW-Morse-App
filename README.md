@@ -1,9 +1,5 @@
 # CW — Morse transceiver overlay App for the F4HWN 8K firmware
 
-<p align="center">
-  <a href="https://buymeacoffee.com/busybin"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="56"></a>
-</p>
-
 CW (Morse) transmit and live decode for the **Quansheng UV-K1 / UV-K5 V3 (PY32F071)** running
 F4HWN firmware **with the 8 KiB overlay window**: multitap composer, 4–50 WPM keying,
 RSSI-based receive decoder, 131-message history, prosigns.
